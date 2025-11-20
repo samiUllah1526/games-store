@@ -2,6 +2,8 @@
 import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
 import ReactCounter from '../components/ReactCounter.tsx';
+import HeroUIProvider from '../components/HeroUIProvider.tsx';
+import HeroUIExample from '../components/HeroUIExample.tsx';
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
@@ -9,5 +11,8 @@ import ReactCounter from '../components/ReactCounter.tsx';
 
 <Layout>
 	<Welcome />
-	<ReactCounter client:only="react" />
+	<HeroUIProvider client:only="react">
+		<ReactCounter client:only="react" />
+		<HeroUIExample client:only="react" />
+	</HeroUIProvider>
 </Layout>

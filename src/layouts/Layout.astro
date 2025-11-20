@@ -1,3 +1,7 @@
+---
+// Layout.astro
+---
+
 <!doctype html>
 <html lang="en">
 	<head>
@@ -12,7 +16,12 @@
 	</body>
 </html>
 
-<style>
+<!-- Global styles - not scoped to ensure HeroUI and Tailwind styles work properly -->
+<style is:global>
+	@tailwind base;
+	@tailwind components;
+	@tailwind utilities;
+
 	html,
 	body {
 		margin: 0;
