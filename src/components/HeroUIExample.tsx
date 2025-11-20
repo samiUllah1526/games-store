@@ -9,7 +9,7 @@ export default function HeroUIExample() {
         </CardHeader>
         <CardBody>
           <p>This is a test component to verify HeroUI is working correctly with Astro.</p>
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+          <div className='flex gap-4 bg-red-500'>
             <Button color="primary">Primary Button</Button>
             <Button color="secondary">Secondary Button</Button>
             <Button color="success">Bordered Button</Button>

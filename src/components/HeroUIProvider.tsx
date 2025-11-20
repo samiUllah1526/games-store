@@ -1,5 +1,5 @@
 import { HeroUIProvider } from '@heroui/react';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface ProviderProps {
   children: ReactNode;
