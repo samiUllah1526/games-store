@@ -1,11 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import HeroUIProvider from '../components/HeroUIProvider.tsx';
-import HeroUIExample from '../components/HeroUIExample.tsx';
+import HomePage from '../components/HomePage.tsx';
 
 ---
 <Layout>
-	<HeroUIProvider client:only="react">
-		<HeroUIExample client:only="react" />
-	</HeroUIProvider>
+	<HomePage client:only="react" />
 </Layout>
