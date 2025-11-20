@@ -36,9 +36,8 @@ export default function Sidebar({ className = '', isOpen = true, onClose }: Side
 
   const menuItems = [
     { label: 'Dashboard', href: '/', icon: '📊' },
-    { label: 'Games', href: '#', icon: '🎮' },
-    { label: 'Analytics', href: '#', icon: '📈' },
-    { label: 'Reports', href: '#', icon: '📄' },
+    { label: 'My Games', href: '/games', icon: '🎮' },
+    { label: 'Upload Game', href: '/upload', icon: '📤' },
   ];
 
   return (

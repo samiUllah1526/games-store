@@ -1,0 +1,9 @@
+---
+import Layout from '../layouts/Layout.astro';
+import GamesPage from '../components/GamesPage.tsx';
+---
+
+<Layout>
+	<GamesPage client:only="react" />
+</Layout>
+

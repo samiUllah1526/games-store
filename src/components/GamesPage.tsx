@@ -3,11 +3,10 @@ import { Button } from '@heroui/react';
 import HeroUIProvider from './HeroUIProvider';
 import AuthProvider from './AuthProvider';
 import Sidebar from './Sidebar';
-import DashboardHome from './DashboardHome';
-import AuthStatus from './AuthStatus';
+import GameList from './GameList';
 import { useAuth } from './AuthProvider';
 
-function DashboardContent() {
+function GamesPageContent() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { user, loading } = useAuth();
 
@@ -22,7 +21,7 @@ function DashboardContent() {
   if (!user) {
     return (
       <div className="p-8 max-w-6xl mx-auto">
-        <AuthStatus />
+        <p>Please sign in to view your games.</p>
       </div>
     );
   }
@@ -31,8 +30,7 @@ function DashboardContent() {
     <div className="flex min-h-screen">
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <main className="flex-1 lg:ml-64">
-        {/* Mobile Menu Button */}
-        <div className="lg:hidden p-4 border-b bg-white">
+        <div className="lg:hidden p-4 border-b bg-white dark:bg-gray-900">
           <Button
             variant="light"
             onPress={() => setSidebarOpen(true)}
@@ -43,7 +41,7 @@ function DashboardContent() {
         </div>
         <div className="p-8">
           <div className="max-w-7xl mx-auto">
-            <DashboardHome />
+            <GameList />
           </div>
         </div>
       </main>
@@ -51,11 +49,11 @@ function DashboardContent() {
   );
 }
 
-export default function HomePage() {
+export default function GamesPage() {
   return (
     <HeroUIProvider>
       <AuthProvider>
-        <DashboardContent />
+        <GamesPageContent />
       </AuthProvider>
     </HeroUIProvider>
   );

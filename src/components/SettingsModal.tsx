@@ -19,8 +19,23 @@ interface SettingsModalProps {
 export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   const [notifications, setNotifications] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(
+    typeof window !== 'undefined' && document.documentElement.classList.contains('dark')
+  );
   const [language, setLanguage] = useState('en');
+
+  const toggleDarkMode = (enabled: boolean) => {
+    setDarkMode(enabled);
+    if (typeof window !== 'undefined') {
+      if (enabled) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      }
+    }
+  };
 
   const handleSave = () => {
     // Save settings logic here
@@ -76,7 +91,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 </div>
                 <Switch
                   isSelected={darkMode}
-                  onValueChange={setDarkMode}
+                  onValueChange={toggleDarkMode}
                 />
               </div>
             </div>
