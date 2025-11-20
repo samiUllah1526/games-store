@@ -16,6 +16,9 @@ export interface Game {
   downloads: number;
   rating: number;
   review_count: number;
+  reviewed_by?: string;
+  reviewed_at?: string;
+  rejection_reason?: string;
   created_at: string;
   updated_at: string;
 }

@@ -16,6 +16,7 @@ import {
   TableCell,
 } from '@heroui/react';
 import { useAuth } from './AuthProvider';
+import { useRBAC } from '../hooks/useRBAC';
 import { supabase } from '../lib/supabase';
 import type { Game, GameBuild } from '../lib/supabase-types';
 
@@ -25,15 +26,17 @@ interface GameDetailProps {
 
 export default function GameDetail({ gameId }: GameDetailProps) {
   const { user } = useAuth();
+  const { isAdmin } = useRBAC();
   const [game, setGame] = useState<Game | null>(null);
   const [builds, setBuilds] = useState<GameBuild[]>([]);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user && gameId) {
       loadGameData();
     }
-  }, [user, gameId]);
+  }, [user, gameId, isAdmin]);
 
   async function loadGameData() {
     try {
@@ -56,6 +59,17 @@ export default function GameDetail({ gameId }: GameDetailProps) {
 
       if (buildsError) throw buildsError;
       setBuilds(buildsData || []);
+
+      // Load reviews if admin
+      if (isAdmin) {
+        const { data: reviewsData } = await supabase
+          .from('game_reviews')
+          .select('*')
+          .eq('game_id', gameId)
+          .order('created_at', { ascending: false });
+        
+        setReviews(reviewsData || []);
+      }
     } catch (error) {
       console.error('Error loading game data:', error);
     } finally {
@@ -186,9 +200,87 @@ export default function GameDetail({ gameId }: GameDetailProps) {
                   </p>
                 </div>
               </div>
+
+              {(game.reviewed_at || game.rejection_reason) && (
+                <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Review Information</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    {game.reviewed_at && (
+                      <div>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Reviewed At</p>
+                        <p className="text-gray-900 dark:text-white">
+                          {new Date(game.reviewed_at).toLocaleDateString()}
+                        </p>
+                      </div>
+                    )}
+                    {game.rejection_reason && (
+                      <div>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">Rejection Reason</p>
+                        <p className="text-gray-900 dark:text-white">{game.rejection_reason}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </CardBody>
           </Card>
         </Tab>
+
+        {isAdmin && (
+          <Tab key="reviews" title="Reviews">
+          <Card>
+            <CardHeader>
+              <h2 className="text-xl font-semibold">Review History</h2>
+            </CardHeader>
+            <CardBody className="p-0">
+              {reviews.length === 0 ? (
+                <div className="text-center py-12">
+                  <p className="text-gray-500 dark:text-gray-400">No reviews yet</p>
+                </div>
+              ) : (
+                <Table aria-label="Reviews table">
+                  <TableHeader>
+                    <TableColumn>ACTION</TableColumn>
+                    <TableColumn>REVIEWER</TableColumn>
+                    <TableColumn>COMMENT</TableColumn>
+                    <TableColumn>DATE</TableColumn>
+                  </TableHeader>
+                  <TableBody>
+                    {reviews.map((review) => (
+                      <TableRow key={review.id}>
+                        <TableCell>
+                          <Chip
+                            color={review.action === 'approved' ? 'success' : 'danger'}
+                            variant="flat"
+                            size="sm"
+                          >
+                            {review.action}
+                          </Chip>
+                        </TableCell>
+                        <TableCell>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">
+                            Reviewer
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">
+                            {review.comment || 'No comment'}
+                          </span>
+                        </TableCell>
+                        <TableCell>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">
+                            {new Date(review.created_at).toLocaleDateString()}
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardBody>
+          </Card>
+          </Tab>
+        )}
 
         <Tab key="builds" title="Builds">
           <Card>

@@ -9,7 +9,9 @@ import {
   Avatar,
   Divider
 } from '@heroui/react';
+import { useState, useEffect } from 'react';
 import { useAuth } from './AuthProvider';
+import { hasRole } from '../lib/rbac';
 import ProfileModal from './ProfileModal';
 import SettingsModal from './SettingsModal';
 
@@ -34,10 +36,23 @@ export default function Sidebar({ className = '', isOpen = true, onClose }: Side
     return null;
   }
 
+  const [isUserAdmin, setIsUserAdmin] = useState(false);
+  
+  useEffect(() => {
+    async function checkAdmin() {
+      if (user) {
+        const admin = await hasRole('admin');
+        setIsUserAdmin(admin);
+      }
+    }
+    checkAdmin();
+  }, [user]);
+
   const menuItems = [
     { label: 'Dashboard', href: '/', icon: '📊' },
     { label: 'My Games', href: '/games', icon: '🎮' },
     { label: 'Upload Game', href: '/upload', icon: '📤' },
+    ...(isUserAdmin ? [{ label: 'Admin Panel', href: '/admin', icon: '🛡️' }] : []),
   ];
 
   return (
